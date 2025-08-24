@@ -1,0 +1,18 @@
+services:                                # 複数コンテナ（サービス）の集合を定義
+  api:                                   # アプリ本体のサービス名（任意）
+    platform: linux/arm64                # Apple Silicon でネイティブ実行（高速化）。本番がamd64でも開発はこれでOK
+    build:                               # イメージをどう作るか（Dockerfileベース）
+      context: .                         # Dockerfile を探すディレクトリ（プロジェクトルート）
+      target: dev                        # Dockerfile の dev ステージをビルドして使用（開発用ツール入り）
+    working_dir: /app                    # コンテナ内の作業ディレクトリ（DockerfileのWORKDIRと合わせる）
+    volumes:                             # ホスト↔コンテナのファイル共有（ライブ編集・キャッシュ）
+      - .:/app                           # カレントディレクトリ全体をコンテナの /app にマウント（即時反映）
+      - gocache:/go/pkg/mod              # Go モジュールのキャッシュを共有（再ビルドを高速化）
+    ports:                               # ポート公開の設定
+      - "8080:8080"                      # ホスト:コンテナ = 8080:8080（http://localhost:8080 でアクセス）
+    environment:                         # 環境変数（コンテナ内プロセスに渡される）
+      - CGO_ENABLED=0                    # CGO を無効化（純Go前提で環境差異を減らす）
+    command: ["air", "-c", ".air.toml"]  # dev ステージの起動コマンドを上書き（Airで監視・自動再起動）
+
+volumes:                                 # 名前付きボリュームの宣言
+  gocache:                               # Go モジュールキャッシュ用（コンテナ再作成でも保持）

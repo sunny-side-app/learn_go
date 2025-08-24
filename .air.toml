@@ -1,0 +1,12 @@
+# 監視の起点（プロジェクトのルート）
+root = "."
+
+# ビルド成果物（実行ファイル）を置く一時フォルダ
+tmp_dir = "tmp"
+
+[build]
+# 変更時に走らせるビルドコマンド（main が ./cmd/app にある想定）
+cmd = "go build -buildvcs=false -o tmp/app ./cmd/app"
+
+# 起動する実行ファイル（上で出力したもの）
+bin = "tmp/app"
