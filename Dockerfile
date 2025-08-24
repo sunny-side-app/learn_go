@@ -2,7 +2,7 @@
 FROM golang:1.24-bookworm AS dev
 WORKDIR /app  # 以降の作業ディレクトリをに設定
 # hot-reloadingツールをインストール。ファイル更新を検知するたびに自動で再ビルド・再起動してくれる
-RUN go install github.com/cosmtrek/air@latest 
+RUN go install github.com/air-verse/air@v1.62.0
 CMD ["air"]
 
 # build: to build the Go binary
@@ -20,7 +20,7 @@ RUN go build -ldflags="-s -w" -o /out/app ./cmd/app
 
 # runtime: to run the Go binary
 # 実行専用の最終ステージ: シェル等がない最小かつ高セキュリティなランタイム
-FROM gcr.io/distroless/static-debian12 AS DEPLOYMENT
+FROM gcr.io/distroless/static-debian12 AS development
 COPY --from=builder /out/app /app # builderステージからビルド済バイナリのみをコピー
 USER nonroot:nonroot # root権限を避ける本番セキュリティの基本
 ENTRYPOINT ["/app"] # コンテナ起動時に実行されるコマンド
