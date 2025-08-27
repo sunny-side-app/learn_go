@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  api:
+    # Delve のために ptrace を許可（必要なときだけ上書き）
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined

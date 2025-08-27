@@ -1,0 +1,24 @@
+{
+  "name": "Go dev (api)",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "docker-compose.devcontainer.yml"
+  ],
+  "service": "api",
+  "workspaceFolder": "/app",
+
+  // compose 側の command（air）をそのまま使う
+  "overrideCommand": false,
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["golang.Go"]
+    }
+  },
+
+  // 初回に gopls / dlv を“コンテナ内”へ導入
+  "postCreateCommand": "go install golang.org/x/tools/gopls@latest && go install github.com/go-delve/delve/cmd/dlv@latest && gopls version && dlv version",
+
+  // そのまま root でOK（必要に応じて変更）
+  "remoteUser": "root"
+}
